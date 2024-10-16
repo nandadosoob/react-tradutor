@@ -1,4 +1,4 @@
-
+import { useState } from "react";
 
 function App() {
   const languages = [
@@ -12,6 +12,20 @@ function App() {
 
   let isLoading = false
   let error = ""
+
+  const [areaValue, setAreaValue] = useState("")
+  const [optionValue, setOptionValue] = useState("")
+  function traduzir (){
+    fetch(
+      `https://api.mymemory.translated.net/get?q=${areaValue}&langpair=pt-br|en`
+  )
+      .then((resposta) => resposta.json())
+      .then((dados) => setOptionValue(dados.responseData.translatedText))
+      .catch((error) => {
+          alert("Erro:", error);
+      });
+  console.log(optionValue);
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -62,7 +76,9 @@ function App() {
             <div className="p-4">
               <textarea
                 className="w-full h-40 text-lg text-textColor bg-transparent resize-none border-none outline-none"
-                placeholder="Digite seu texto..."                
+                placeholder="Digite seu texto..."   
+                onChange={traduzir}      
+                value={areaValue}       
               ></textarea>
             </div>
 
