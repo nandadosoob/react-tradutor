@@ -59,12 +59,10 @@ function App() {
               value={firstLangOption}
               onChange={(e) => setFirstLangOption(e.target.value)}
             >
-              <option value="pt-br">Português</option>
-              <option value="en-us">Inglês</option>
-              <option value="es">Espanhol</option>
-              <option value="fr">Francês</option>
-              <option value="de">Alemão</option>
-              <option value="it">Italiano</option>
+              {
+                languages.map( elemento => (<option value={elemento.code}>{elemento.name}</option>))
+              }
+              
             </select>
 
             <button className="p-2 rounded-full hover:bg-gray-100 outline-none">
