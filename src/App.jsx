@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
   const languages = [
@@ -10,21 +10,37 @@ function App() {
     { code: "pt-br", name: "Português" },
   ];
 
-  let isLoading = false
-  let error = ""
+  // let isLoading = false
+  // let error = ""
 
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
   const [areaValue, setAreaValue] = useState("")
-  const [optionValue, setOptionValue] = useState("")
-  function traduzir (){
+  const [traduzValue, setTraduzValue] = useState("")
+  const [firstLangOption, setFirstLangOption] = useState("")
+  const [secondLangOption, setSecondLangOption] = useState("")
+
+
+  useEffect(() => {
+    traduzir()
+
+  }, [areaValue, firstLangOption, secondLangOption])
+
+  function traduzir() {
+    setIsLoading(true)
     fetch(
-      `https://api.mymemory.translated.net/get?q=${areaValue}&langpair=pt-br|en`
-  )
+      `https://api.mymemory.translated.net/get?q=${areaValue}&langpair=${firstLangOption}|${secondLangOption}`
+    )
       .then((resposta) => resposta.json())
-      .then((dados) => setOptionValue(dados.responseData.translatedText))
+      .then((dados) => {
+        setTraduzValue(dados.responseData.translatedText);
+        setIsLoading(false);
+      })
       .catch((error) => {
-          alert("Erro:", error);
+        setError("Erro:", error);
+        setIsLoading(false)
       });
-  console.log(optionValue);
+    console.log(traduzValue);
   }
 
   return (
@@ -40,10 +56,15 @@ function App() {
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
             <select
               className="text-sm text-textColor bg-transparent border-none focus:outline-none cursor-pointer"
-              value="en-us"
+              value={firstLangOption}
+              onChange={(e) => setFirstLangOption(e.target.value)}
             >
               <option value="pt-br">Português</option>
               <option value="en-us">Inglês</option>
+              <option value="es">Espanhol</option>
+              <option value="fr">Francês</option>
+              <option value="de">Alemão</option>
+              <option value="it">Italiano</option>
             </select>
 
             <button className="p-2 rounded-full hover:bg-gray-100 outline-none">
@@ -65,10 +86,15 @@ function App() {
 
             <select
               className="text-sm text-textColor bg-transparent border-none focus:outline-none cursor-pointer"
-              value="pt-br"
+              value={secondLangOption}
+              onChange={(e) => setSecondLangOption(e.target.value)}
             >
               <option value="pt-br">Português</option>
               <option value="en-us">Inglês</option>
+              <option value="es">Espanhol</option>
+              <option value="fr">Francês</option>
+              <option value="de">Alemão</option>
+              <option value="it">Italiano</option>
             </select>
           </div>
 
@@ -76,9 +102,12 @@ function App() {
             <div className="p-4">
               <textarea
                 className="w-full h-40 text-lg text-textColor bg-transparent resize-none border-none outline-none"
-                placeholder="Digite seu texto..."   
-                onChange={traduzir}      
-                value={areaValue}       
+                placeholder="Digite seu texto..."
+                // onChange={traduzir}
+                value={areaValue}
+                onChange={(e) => {setAreaValue(e.target.value)}}
+                
+
               ></textarea>
             </div>
 
@@ -88,7 +117,8 @@ function App() {
                   <div className="animate-spin rounded-full h-8 w-8 border-blue-500 border-t-2"></div>
                 </div>
               ) : (
-                <p className="text-lg text-textColor">Colocar aqui o texto traduzido</p>
+                <p className="text-lg text-textColor">{traduzValue}</p>
+                // <p className="text-lg text-textColor">Colocar aqui o texto traduzido</p>
               )}
             </div>
           </div>
