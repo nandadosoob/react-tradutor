@@ -17,8 +17,13 @@ function App() {
   const [error, setError] = useState("")
   const [areaValue, setAreaValue] = useState("")
   const [traduzValue, setTraduzValue] = useState("")
-  const [firstLangOption, setFirstLangOption] = useState("")
-  const [secondLangOption, setSecondLangOption] = useState("")
+  const [firstLangOption, setFirstLangOption] = useState("pt-br")
+  const [secondLangOption, setSecondLangOption] = useState("en-us")
+
+  function trocaIdioma(){
+    setFirstLangOption(secondLangOption);
+    setSecondLangOption(firstLangOption);
+  }
 
 
   useEffect(() => {
@@ -27,6 +32,10 @@ function App() {
   }, [areaValue, firstLangOption, secondLangOption])
 
   function traduzir() {
+    if (!areaValue.trim()){
+      setTraduzValue("insira uma palavra")
+      return
+    }
     setIsLoading(true)
     fetch(
       `https://api.mymemory.translated.net/get?q=${areaValue}&langpair=${firstLangOption}|${secondLangOption}`
@@ -65,7 +74,8 @@ function App() {
               
             </select>
 
-            <button className="p-2 rounded-full hover:bg-gray-100 outline-none">
+            <button className="p-2 rounded-full hover:bg-gray-100 outline-none"
+            onClick={trocaIdioma}>
               <svg
                 className="w-5 h-5 text-headerColor"
                 fill="none"
